@@ -3,6 +3,11 @@ import 'package:hexcolor/hexcolor.dart';
 import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
 import 'manage_time.dart';
+import '../models/schedule_model.dart';
+import '../api_service/api_services.dart';
+import '../api_service/urls.dart';
+import '../prefs/app_preference.dart';
+import '../prefs/preferece_keys.dart';
 
 class ScheduleScreen extends StatefulWidget {
   @override
@@ -10,26 +15,48 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  final List<Map<String, dynamic>> days = [
-    {"label": "Mon", "date": "06"},
-    {"label": "Tue", "date": "07"},
-    {"label": "Wed", "date": "08"},
-    {"label": "Thu", "date": "09"},
-    {"label": "Fri", "date": "10"},
-    {"label": "Sat", "date": "11"},
-  ];
-
+  ScheduleModel? scheduleData;
   int selectedDayIndex = 0;
+  bool isLoading = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    String today = DateTime.now().toIso8601String().split('T')[0];
+    fetchSchedule(date: today);
+  }
+
+  Future<void> fetchSchedule({required String date}) async {
+    setState(() => isLoading = true);
+
+    try {
+      final response = await ApiService.postRequest(schedule, {
+        "serviceProvider": AppPreference().getInt(PreferencesKey.userId),
+        "date": date,
+      });
+
+      setState(() {
+        scheduleData = ScheduleModel.fromJson(response.data);
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("API Error: $e");
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'Schedule'),
       backgroundColor: kwhite,
-      body: Column(
+      body: scheduleData == null
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: InkWell(
@@ -37,37 +64,56 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ManageAvailabilityScreen()),
+                    builder: (context) => ManageAvailabilityScreen(),
+                  ),
                 );
               },
-              child: Text(
-                "Manage your availability",
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.add_circle_outline,
                     color: HexColor('#004271'),
-                    fontSize: 16),
+                    size: 22,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    "Add your availability",
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      decorationThickness: 2,
+                      decorationColor: HexColor('#004271'),
+                      fontWeight: FontWeight.w500,
+                      color: HexColor('#004271'),
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-          // Month label + background strip + day selector
+          // 🔹 Month label + background strip + day selector
           Container(
-            height: 55,
+            height: 70,
             width: double.infinity,
             color: HexColor('#E4F9FF'),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: days.length + 1, // +1 for month label
+              itemCount: scheduleData!.data.dates.length,
               separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
                 if (index == 0) {
+                  // Month label dynamically from first date
+                  String month =
+                      scheduleData!.data.dates[0].month;
                   return Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0),
                       child: Text(
-                        "Oct",
+                        month,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
@@ -79,12 +125,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 } else {
                   int dayIndex = index - 1;
                   bool isSelected = selectedDayIndex == dayIndex;
+                  final date = scheduleData!.data.dates[dayIndex];
 
                   return GestureDetector(
                     onTap: () {
                       setState(() {
                         selectedDayIndex = dayIndex;
                       });
+                      fetchSchedule(date: date.date);
                     },
                     child: Container(
                       width: 55,
@@ -92,13 +140,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         color: isSelected
                             ? HexColor('#004271')
                             : Colors.transparent,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(0),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            days[dayIndex]["label"]!,
+                            date.day,
                             style: TextStyle(
                               color: isSelected
                                   ? Colors.white
@@ -109,7 +157,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            days[dayIndex]["date"]!,
+                            date.date.split("-").last,
                             style: TextStyle(
                               color: isSelected
                                   ? Colors.white
@@ -127,170 +175,78 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
 
-          SizedBox(height: 22),
+          const SizedBox(height: 22),
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Text(
-              "${days[selectedDayIndex]["label"]}, ${days[selectedDayIndex]["date"]} Oct 2025",
-              style: TextStyle(
-                  fontSize: 16.5,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87),
+              scheduleData!
+                  .data.dates[selectedDayIndex].formatted,
+              style: const TextStyle(
+                fontSize: 16.5,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
           ),
-          SizedBox(height: 17),
+          const SizedBox(height: 17),
 
           Expanded(
-            child: ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                ScheduleCard(
-                  img: "assets/images/user_img.png",
-                  name: "Riya Sharma",
-                  service: "Deep Wardrobe Assistance + Ironing",
-                  time: "04 Oct 2025, 10:00 AM – 12:00 PM",
-                  address: "3, Rosewood Villas, Nashik",
-                  badge: "Upcoming",
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator(
+              color: Color(0xFF004271),
+            ))
+            : scheduleData!.data.todaysAcceptedBookings.isEmpty
+                ? Center(
+                            child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                Image.asset(
+                  'assets/images/no_data_found.png',
+                  height: 140,
+                  width: 180,
+                  fit: BoxFit.contain,
                 ),
-                ScheduleCard(
-                  img: "assets/images/user_img.png",
-                  name: "Riya Sharma",
-                  service: "Deep Wardrobe Assistance + Ironing",
-                  time: "04 Oct 2025, 10:00 AM – 12:00 PM",
-                  address: "3, Rosewood Villas, Nashik",
-                  badge: "Upcoming",
+                const SizedBox(height: 12),
+                const Text(
+                  "No Data found!",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
                 ),
-              ],
+                            ],
+                          ),
+                          ) : Expanded(
+              child: ListView.builder(
+                //physics:NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: scheduleData!
+                    .data.todaysAcceptedBookings.length,
+                itemBuilder: (context, index) {
+                  final booking = scheduleData!
+                      .data.todaysAcceptedBookings[index];
+                  return ScheduleCard(
+                    img: booking.customerDetails.image,
+                    name: booking.customerDetails.name,
+                    service: booking.serviceDetails.name,
+                    time:
+                    "${booking.scheduledDate}, ${booking.preferredTime}",
+                    address: booking.customerDetails.email,
+                    badge: booking.bookingType.toUpperCase(),
+                  );
+                },
+              ),
             ),
           ),
+         SizedBox(height: 100),
         ],
       ),
     );
   }
 }
-//
-// class ScheduleCard extends StatelessWidget {
-//   final String img, name, service, time, address, badge;
-//
-//   const ScheduleCard({
-//     required this.img,
-//     required this.name,
-//     required this.service,
-//     required this.time,
-//     required this.address,
-//     required this.badge,
-//     Key? key,
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-//       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(15),
-//         border: Border.all(color: HexColor('#e5e5e5'), width: 0.85),
-//         boxShadow: [
-//           BoxShadow(
-//             blurRadius: 4,
-//             color: Colors.black.withOpacity(0.04),
-//             offset: Offset(0, 2),
-//           ),
-//         ],
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               CircleAvatar(
-//                 radius: 20,
-//                 backgroundImage: AssetImage(img),
-//               ),
-//               SizedBox(width: 12),
-//               Expanded(
-//                 child:
-//                 Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(name,
-//                         style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 15.5,
-//                             color: Colors.black)),
-//                     SizedBox(height: 3),
-//                     Text(
-//                       "Service - $service",
-//                       style: TextStyle(
-//                         fontSize: 13.5,
-//                         fontWeight: FontWeight.w500,
-//                         color: Colors.black87,
-//                       ),
-//                     ),
-//                     SizedBox(height: 4),
-//                     // Date & Time without icon
-//                     Text(
-//                       "Date & Time – $time",
-//                       style: TextStyle(fontSize: 13, color: Colors.black54),
-//                     ),
-//                     SizedBox(height: 4),
-//                     // Address without icon
-//                     Text(
-//                       "Address – $address",
-//                       style: TextStyle(fontSize: 13, color: Colors.black54),
-//                       maxLines: 2,
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                   ],
-//                 ),
-//
-//               ),
-//             ],
-//           ),
-//           SizedBox(height: 8),
-//           Divider(color: Colors.grey[300], thickness: 1),
-//           SizedBox(height: 6),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               GestureDetector(
-//                 onTap: () {},
-//                 child: Text(
-//                   "View Details about the Service",
-//                   style: TextStyle(
-//                     color: HexColor('#004271'),
-//                     fontWeight: FontWeight.w600,
-//                     fontSize: 13,
-//                   ),
-//                 ),
-//               ),
-//               Container(
-//                 width: 107,
-//                 height: 30,
-//                 decoration: BoxDecoration(
-//                   color: HexColor('#E4F9FF'),
-//                   borderRadius: BorderRadius.circular(10),
-//                 ),
-//                 alignment: Alignment.center,
-//                 child: Text(
-//                   badge,
-//                   style: TextStyle(
-//                     color: HexColor('#098bd9'),
-//                     fontWeight: FontWeight.bold,
-//                     fontSize: 13.5,
-//                   ),
-//                 ),
-//               ),
-//
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+
 class ScheduleCard extends StatelessWidget {
   final String img, name, service, time, address, badge;
 
@@ -307,8 +263,8 @@ class ScheduleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -317,7 +273,7 @@ class ScheduleCard extends StatelessWidget {
           BoxShadow(
             blurRadius: 4,
             color: Colors.black.withOpacity(0.04),
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -329,44 +285,38 @@ class ScheduleCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundImage: AssetImage(img),
+                backgroundImage: NetworkImage(img),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       name,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15.5,
                           color: Colors.black),
                     ),
-                    SizedBox(height: 3),
+                    const SizedBox(height: 3),
                     Text(
                       "Service - $service",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13.5,
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Date & Time – $time",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.black,
-                      ),
+                      style: const TextStyle(fontSize: 13, color: Colors.black),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Address – $address",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.black,
-                      ),
+                      style: const TextStyle(fontSize: 13, color: Colors.black),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -375,9 +325,9 @@ class ScheduleCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Divider(color: Colors.grey[300], thickness: 1),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -416,3 +366,6 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 }
+
+
+

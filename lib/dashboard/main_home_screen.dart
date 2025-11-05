@@ -3,12 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_app_qwickhome/dashboard/earnings.dart';
 import 'package:service_app_qwickhome/dashboard/schedule_screen.dart';
 import 'package:service_app_qwickhome/dashboard/settings.dart';
-
 import '../colors/colors.dart';
 import '../utils/enum.dart';
 import 'home.dart';
-
-
 
 class MainHomeScreen extends ConsumerWidget {
   @override

@@ -3,13 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:service_app_qwickhome/prefs/app_preference.dart';
+import 'auth/splash.dart';
 
-import 'dashboard/home.dart';
-import 'dashboard/main_home_screen.dart';
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
 
+  await AppPreference().initialAppPreference();
 
-
-void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: HexColor('#E4F9FF'),
     statusBarIconBrightness: Brightness.dark,
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: MainHomeScreen(),
+      home: SplashScreen(),
     );
   }
 }

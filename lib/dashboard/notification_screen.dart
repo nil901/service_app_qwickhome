@@ -1,35 +1,238 @@
-import 'package:flutter/material.dart';
-import '../colors/colors.dart';
+// import 'package:flutter/material.dart';
+// import '../colors/colors.dart';
+//
+// class NotificationScreen extends StatefulWidget {
+//   @override
+//   State<NotificationScreen> createState() => _NotificationScreenState();
+// }
+//
+// class _NotificationScreenState extends State<NotificationScreen> {
+//   bool showUnread = false;
+//
+//   final List<Map<String, dynamic>> notifications = [
+//     {
+//       "title": "Your booking has been confirmed.",
+//       "subtitle":
+//       "Your Service is successfully booked. Our professional will reach you on time.",
+//       "buttonText": "Track",
+//       "isUnread": true,
+//     },
+//     {
+//       "title": "Your service has started.",
+//       "subtitle": "The service is now in progress at your location.",
+//       "buttonText": "View",
+//       "isUnread": true,
+//     },
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     List<Map<String, dynamic>> filteredNotifications =
+//     showUnread
+//         ? notifications.where((n) => n['isUnread'] == true).toList()
+//         : notifications;
+//
+//     return Scaffold(
+//       backgroundColor: kwhite,
+//       appBar: AppBar(
+//         backgroundColor: kscoundPrimaryColor,
+//         titleSpacing: 0,
+//         title: Text("Notifications", style: TextStyle(fontSize: 18)),
+//         actions: [
+//           IconButton(
+//             icon: Icon(Icons.close),
+//             onPressed: () {
+//               Navigator.pop(context);
+//             },
+//           ),
+//         ],
+//       ),
+//       body: Padding(
+//         padding: EdgeInsets.all(16),
+//         child: Column(
+//           children: [
+//             Row(
+//               children: [
+//                 GestureDetector(
+//                   onTap: () {
+//                     setState(() {
+//                       showUnread = false;
+//                     });
+//                   },
+//                   child: Container(
+//                     padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+//                     decoration: BoxDecoration(
+//                       color: showUnread ? Colors.transparent : kprimary,
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                     child: Text(
+//                       "All",
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         color: showUnread ? Colors.black54 : Colors.white,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(width: 8),
+//                 GestureDetector(
+//                   onTap: () {
+//                     setState(() {
+//                       showUnread = true;
+//                     });
+//                   },
+//                   child: Container(
+//                     padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+//                     decoration: BoxDecoration(
+//                       color: showUnread ?kprimary : Colors.transparent,
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                     child: Text(
+//                       "Unread",
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         color: showUnread ?kwhite: Colors.black54,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//
+//             SizedBox(height: 16),
+//
+//             Expanded(
+//               child: ListView.builder(
+//                 itemCount: filteredNotifications.length,
+//                 itemBuilder: (context, index) {
+//                   final item = filteredNotifications[index];
+//                   return Padding(
+//                     padding: const EdgeInsets.only(bottom: 16),
+//                     child: Container(
+//                       padding: EdgeInsets.all(12),
+//                       decoration: BoxDecoration(
+//                         border: Border.all(color: Colors.grey.shade300),
+//                         borderRadius: BorderRadius.circular(12),
+//                       ),
+//                       child: Row(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           // Green dot for unread
+//                           if (item['isUnread'] == true)
+//                             Container(
+//                               margin: EdgeInsets.only(right: 12, top: 8),
+//                               width: 12,
+//                               height: 12,
+//                               decoration: BoxDecoration(
+//                                 color: Colors.green,
+//                                 shape: BoxShape.circle,
+//                               ),
+//                             )
+//                           else
+//                             SizedBox(width: 24),
+//
+//                           Expanded(
+//                             child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   item['title'],
+//                                   style: TextStyle(
+//                                     fontWeight: FontWeight.bold,
+//                                     fontSize: 16,
+//                                   ),
+//                                 ),
+//                                 SizedBox(height: 4),
+//                                 Text(
+//                                   item['subtitle'],
+//                                   style: TextStyle(color: Colors.black54),
+//                                 ),
+//                                 SizedBox(height: 8),
+//                                 Container(
+//                                   //height: 20,
+//                                   decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(10),
+//                                       border: Border.all(color: kprimary,width: 1.5)
+//                                   ),
+//                                   child: Padding(
+//                                     padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 7),
+//                                     child: Text(item['buttonText'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+//                                   ),
+//                                 )
+//                               ],
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-class NotificationScreen extends StatefulWidget {
+
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import '../api_service/api_services.dart';
+import '../api_service/providers.dart';
+import '../api_service/urls.dart';
+import '../colors/colors.dart';
+import '../models/notification_model.dart';
+import '../prefs/app_preference.dart';
+import '../prefs/preferece_keys.dart';
+
+
+class NotificationScreen extends ConsumerStatefulWidget {
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  ConsumerState<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   bool showUnread = false;
 
-  final List<Map<String, dynamic>> notifications = [
-    {
-      "title": "Your booking has been confirmed.",
-      "subtitle":
-      "Your Service is successfully booked. Our professional will reach you on time.",
-      "buttonText": "Track",
-      "isUnread": true,
-    },
-    {
-      "title": "Your service has started.",
-      "subtitle": "The service is now in progress at your location.",
-      "buttonText": "View",
-      "isUnread": true,
-    },
-  ];
+  bool isLoading = false;
+
+  Future<void> notifactionApi(WidgetRef ref) async {
+    // ref.read(notifactionProvider.notifier).state = [];
+
+    try {
+      setState(() => isLoading = true);
+
+      final response = await ApiService.postRequest(getNotifications, {
+        "user": AppPreference().getInt(PreferencesKey.userId),
+      });
+      if (response.data['status'] == true) {
+        final data = response.data['data']['notifications'] as List;
+        ref.read(notifactionProvider.notifier).state =
+            data.map((json) => NotifactionModel.fromJson(json)).toList();
+      } else {
+        print("Failed: ${response.data['message']}");
+      }
+    } catch (e) {
+      print("Error fetching search results: $e");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
+  void initState() {
+    notifactionApi(ref);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> filteredNotifications =
-    showUnread
-        ? notifications.where((n) => n['isUnread'] == true).toList()
+    final notifications = ref.watch(notifactionProvider);
+    final filteredNotifications = showUnread
+        ? notifications.where((n) => n.readAt == null).toList()
         : notifications;
 
     return Scaffold(
@@ -37,30 +240,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
       appBar: AppBar(
         backgroundColor: kscoundPrimaryColor,
         titleSpacing: 0,
-        title: Text("Notifications", style: TextStyle(fontSize: 18)),
+        title: const Text("Notifications", style: TextStyle(fontSize: 18)),
         actions: [
           IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Tab Switch Row
             Row(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showUnread = false;
-                    });
-                  },
+                  onTap: () => setState(() => showUnread = false),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    padding:
+                    const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                     decoration: BoxDecoration(
                       color: showUnread ? Colors.transparent : kprimary,
                       borderRadius: BorderRadius.circular(12),
@@ -74,24 +273,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showUnread = true;
-                    });
-                  },
+                  onTap: () => setState(() => showUnread = true),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    padding:
+                    const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                     decoration: BoxDecoration(
-                      color: showUnread ?kprimary : Colors.transparent,
+                      color: showUnread ? kprimary : Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       "Unread",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: showUnread ?kwhite: Colors.black54,
+                        color: showUnread ? kwhite : Colors.black54,
                       ),
                     ),
                   ),
@@ -99,70 +295,92 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ],
             ),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             Expanded(
               child: ListView.builder(
                 itemCount: filteredNotifications.length,
                 itemBuilder: (context, index) {
                   final item = filteredNotifications[index];
+                  final isUnread = item.readAt == null;
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Green dot for unread
-                          if (item['isUnread'] == true)
-                            Container(
-                              margin: EdgeInsets.only(right: 12, top: 8),
-                              width: 12,
-                              height: 12,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
-                            )
-                          else
-                            SizedBox(width: 24),
+                    child: InkWell(
+                      onTap: () async {
+                        if (isUnread) {
+                          try {
+                            final response =
+                            await ApiService.postRequest(getnotifactionRead, {
+                              "user":
+                              AppPreference().getInt(PreferencesKey.userId),
+                              "notificationid": item.id.toString(),
+                            });
 
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item['title'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
+                            if (response.data['status'] == true) {
+                              // Refresh list
+                              notifactionApi(ref);
+                            }
+                          } catch (e) {
+                            print("Error marking read: $e");
+                          }
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(12),
+                          color: isUnread
+                              ? Colors.green.withOpacity(0.05)
+                              : Colors.white,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (isUnread)
+                              Container(
+                                margin: const EdgeInsets.only(right: 12, top: 8),
+                                width: 12,
+                                height: 12,
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
                                 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  item['subtitle'],
-                                  style: TextStyle(color: Colors.black54),
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  //height: 20,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: kprimary,width: 1.5)
+                              )
+                            else
+                              const SizedBox(width: 24),
+
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.data!.title.toString(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 7),
-                                    child: Text(item['buttonText'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    item.data!.description.toString(),
+                                    style:
+                                    const TextStyle(color: Colors.black54),
                                   ),
-                                )
-                              ],
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    item.data!.time.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );

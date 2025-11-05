@@ -1,3 +1,8 @@
 const String baseUrl = "http://admin.qwikhom.ae/api/";
+const String schedule = "ServiceProviderMySchedule";
 const String signupUrl = "signup";
-const String addresses = "addresses";
+const String serviceProviderMyBookings = "ServiceProviderMyBookings";
+const String getNotifications = "notifications";
+const String getnotifactionRead = "markAsReadNotification";
+const String  geTimeandDateOptions = "ServiceProviderAvailabilityOptions";
+const String  ServiceProviderAvailability = "ServiceProviderSetAvailability";
