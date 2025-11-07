@@ -168,7 +168,7 @@ class TimerScreen extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context)=> PunchOutScreen()));
                   },
                   child: const Text(
-                    "Punch In Now",
+                    "Punch Out Now",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,

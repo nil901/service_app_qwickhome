@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:service_app_qwickhome/dashboard/punch_in_timer.dart';
 import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
 import '../utils/size.dart';
@@ -223,7 +222,7 @@ class PunchOutScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> TimerScreen()));
+                     // Navigator.push(context, MaterialPageRoute(builder: (context)=> TimerScreen()));
                     },
                     child: const Text(
                       "Punch Out Now",

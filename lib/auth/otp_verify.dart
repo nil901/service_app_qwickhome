@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../dashboard/main_home_screen.dart';
+import '../service_selections/service_setup.dart';
 import '../utils/enum.dart';
 
 
@@ -73,9 +74,13 @@ class _OtpVerifyState extends State<OtpVerify> {
             ),
           );
 
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) =>  MainHomeScreen(initialTab: BottomTab.home,)),
+          // );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  MainHomeScreen(initialTab: BottomTab.home,)),
+            MaterialPageRoute(builder: (context) => SetupServices()),
           );
         });
       } else {

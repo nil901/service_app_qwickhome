@@ -269,7 +269,12 @@
 
 import 'package:flutter/material.dart';
 import '../colors/colors.dart';
+import '../setting_screens/about_us.dart';
+import '../setting_screens/account&Security.dart';
 import '../setting_screens/personal_info.dart';
+import '../setting_screens/service_area.dart';
+import '../setting_screens/service_details.dart';
+import '../setting_screens/support.dart';
 import '../utils/custom_app_bar.dart';
 
 
@@ -346,8 +351,8 @@ class SettingScreen extends StatelessWidget {
               "Service Details",
               "Service offered, area",
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlaceholderScreen("Service Details"),
+                  Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => ServiceDetailsScreen(),
                 ));
               },
             ),
@@ -357,9 +362,12 @@ class SettingScreen extends StatelessWidget {
               "Service Areas",
               "Manage service location",
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlaceholderScreen("Service Areas"),
-                ));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ServiceAreasScreen(),
+                  ),
+                );
               },
             ),
 
@@ -369,7 +377,7 @@ class SettingScreen extends StatelessWidget {
               "Bank details, payment methods",
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlaceholderScreen("Payment & Banking"),
+                  builder: (_) => AccountSecurityScreen(),
                 ));
               },
             ),
@@ -380,7 +388,7 @@ class SettingScreen extends StatelessWidget {
               "Password, privacy, security",
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlaceholderScreen("Account & Security"),
+                  builder: (_) =>AccountSecurityScreen(),
                 ));
               },
             ),
@@ -391,7 +399,7 @@ class SettingScreen extends StatelessWidget {
               "Help center, contact support",
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlaceholderScreen("Support"),
+                  builder: (_) => SupportScreen(),
                 ));
               },
             ),
@@ -402,7 +410,7 @@ class SettingScreen extends StatelessWidget {
               "App info, terms & privacy",
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlaceholderScreen("About Us"),
+                  builder: (_) =>  AboutUsScreen(),
                 ));
               },
             ),
@@ -522,22 +530,6 @@ class SettingScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// ✅ Placeholder Screen (remove later)
-class PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const PlaceholderScreen(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(child: Text("$title Screen Coming Soon...")),
     );
   }
 }
