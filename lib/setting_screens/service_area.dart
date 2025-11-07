@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/custom_app_bar.dart';
+
 class ServiceAreasScreen extends StatelessWidget {
   const ServiceAreasScreen({super.key});
 
@@ -7,20 +9,7 @@ class ServiceAreasScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFE6F7FF),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Service Areas",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-      ),
-
+      appBar: CustomAppBar(title: 'Service Areas'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

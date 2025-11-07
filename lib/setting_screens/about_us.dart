@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/custom_app_bar.dart';
+
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
 
@@ -7,21 +9,7 @@ class AboutUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFE6F7FF),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "About Us",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-      ),
-
+      appBar: CustomAppBar(title: 'About Us'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

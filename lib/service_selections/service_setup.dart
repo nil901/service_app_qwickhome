@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/custom_app_bar.dart';
+
 class SetupServices extends StatelessWidget {
   const SetupServices({super.key});
 
@@ -7,27 +9,12 @@ class SetupServices extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFE6F7FF),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-        ),
-        title: const Text(
-          "Set Up Your Services",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-      ),
-
+      appBar: CustomAppBar(title: 'Set Up Your Services'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// ✅ Progress Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

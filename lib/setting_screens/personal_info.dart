@@ -3,48 +3,68 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class PersonalInfoScreen extends StatelessWidget {
+import '../utils/custom_app_bar.dart';
+
+class PersonalInfoScreen extends StatefulWidget {
+  @override
+  State<PersonalInfoScreen> createState() => _PersonalInfoScreenState();
+}
+
+class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HexColor('#FFFFFF'),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFE6F7FF),
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text("Personal Information",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
-        centerTitle: true,
-      ),
-
+      appBar: CustomAppBar(title: 'Personal Information'),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // 🔴 Info Protected Banner
             Container(
-              padding: EdgeInsets.all(12),
+              height: 107,
+             // width: double.infinity,
+              padding: EdgeInsets.only(left: 20, right: 12, top: 8, bottom: 12),
               decoration: BoxDecoration(
-                color: Color(0xFFFFF3F3),
+                color: Color(0xFFE6F7FF),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Color(0xFFFFD1D1)),
               ),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline, color: Colors.red),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      "Information Protected\n"
-                          "For security reasons, personal information cannot be edited directly. "
-                          "To update your information, please request changes through our admin team.",
-                      style: TextStyle(fontSize: 12, color: Colors.black87, height: 1.3),
+                  SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center, // ✅ center align
+                    children: [
+                      Image.asset('assets/images/alert.png', height: 20, width: 18),
+                      SizedBox(width: 10),
+
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: Image.asset('assets/images/lock.png', height: 15, width: 12),
+                      ),
+                      SizedBox(width: 6),
+
+                      Text(
+                        "Information Protected",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 14),
+                  Text(
+                 "For security reasons, personal information cannot be edited directly. To update your information, "
+                     "please request changes through our admin team.",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black87,
+                      height: 1.3,
                     ),
                   ),
                 ],
@@ -56,19 +76,35 @@ class PersonalInfoScreen extends StatelessWidget {
             /// ✅ Profile Photo Section
             _sectionCard(
               title: "Profile Photo",
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/47.jpg"),
+                    backgroundImage: AssetImage('assets/images/user_img.png'),
                   ),
                   SizedBox(height: 6),
-                  Text("Samiksha Raka",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-
-                  Text("Profile photo is managed by admin",
-                      style: TextStyle(fontSize: 12, color: Colors.black54)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(width: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 4, left: 10, right: 0),
+                        child: Text(
+                          "Prathamesh Rathod ",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0, bottom: 4, left: 10, right: 0),
+                        child: Text(
+                          "Profile photo is managed by admin",
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -81,12 +117,22 @@ class PersonalInfoScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _infoRow("First Name", "Samiksha"),
-                  _infoRow("Last Name", "Raka"),
-                  _infoRow("Email Address", "samiksha@123"),
-                  _infoRow("Bio",
-                      "Professional plumber with 5+ years of experience specializing in residential and commercial plumbing services.",
-                      isMultiLine: true),
+                  Row(
+                    children: [
+                      _infoRow("First Name", "Prathamesh"),
+                      SizedBox(width: 80),
+                      _infoRow("Last Name", "Rathod"),
+                    ],
+                  ),
+
+                  _infoRow("Email Address", "rathodprathamesh23@gmail.com"),
+                  _infoRow(
+                    "Bio",
+                    "Professional plumber with 5+ years of experience specializing in residential and commercial plumbing services.",
+                    isMultiLine: true,
+                  ),
+                 SizedBox(height: 8),
+                 Text('Brief description for your profile'),
                 ],
               ),
             ),
@@ -121,10 +167,10 @@ class PersonalInfoScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
+
             /// ✅ Request Changes Button
             Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: SizedBox(
                 width: double.infinity,
                 height: 44,
@@ -165,6 +211,7 @@ class PersonalInfoScreen extends StatelessWidget {
   /// Reusable Section Card
   Widget _sectionCard({required String title, required Widget child}) {
     return Container(
+      //height: 115
       width: double.infinity,
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -178,9 +225,11 @@ class PersonalInfoScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              Icon(Icons.lock_outline, size: 18, color: Colors.grey),
+              Text(
+                title,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Image.asset('assets/images/lock.png', height: 25, width: 20),
             ],
           ),
           SizedBox(height: 8),
@@ -197,12 +246,18 @@ class PersonalInfoScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black54)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
           SizedBox(height: 3),
           Text(
             value,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54,),
             maxLines: isMultiLine ? 3 : 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -229,19 +284,21 @@ class PersonalInfoScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 /// Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "Request Information Change",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Icon(Icons.close, size: 20),
-                    )
+                    ),
                   ],
                 ),
 
@@ -254,8 +311,10 @@ class PersonalInfoScreen extends StatelessWidget {
 
                 SizedBox(height: 15),
 
-                Text("What would you like to change?",
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                Text(
+                  "What would you like to change?",
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
 
                 SizedBox(height: 8),
 
@@ -264,7 +323,7 @@ class PersonalInfoScreen extends StatelessWidget {
                   maxLines: 3,
                   decoration: InputDecoration(
                     hintText:
-                    "Please specify which information you’d like to update and provide the new details",
+                        "Please specify which information you’d like to update and provide the new details",
                     hintStyle: TextStyle(fontSize: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -303,8 +362,10 @@ class PersonalInfoScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Text("Cancel",
-                            style: TextStyle(color: Color(0xFF004271))),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Color(0xFF004271)),
+                        ),
                       ),
                     ),
                     SizedBox(width: 10),
@@ -334,5 +395,4 @@ class PersonalInfoScreen extends StatelessWidget {
       ),
     );
   }
-
 }
