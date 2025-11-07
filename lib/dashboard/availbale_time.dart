@@ -217,10 +217,29 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:service_app_qwickhome/dashboard/schedule_screen.dart';
+import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
+import '../utils/enum.dart';
 
-class AvailabilityScreen extends StatelessWidget {
+// class AvailabilityScreen extends StatefulWidget {
+//   final String selectedDate;
+//   final List<String> selectedTimes;
+//
+//   const AvailabilityScreen({
+//     super.key,
+//     required this.selectedDate,
+//     required this.selectedTimes,
+//   });
+//
+//   @override
+//   State<AvailabilityScreen> createState() => _AvailabilityScreenState();
+// }
+//
+// class _AvailabilityScreenState extends State<AvailabilityScreen> {
+class AvailabilityScreen extends ConsumerStatefulWidget {
   final String selectedDate;
   final List<String> selectedTimes;
 
@@ -231,11 +250,19 @@ class AvailabilityScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  ConsumerState<AvailabilityScreen> createState() => _AvailabilityScreenState();
+}
+
+class _AvailabilityScreenState extends ConsumerState<AvailabilityScreen> {
+  @override
+  Widget build(BuildContext context, ) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: 'Here’s When You’re Available'),
-      body: Padding(
+        appBar: CustomAppBar(
+          title: "Here’s When You’re Available",
+         //initialTab: BottomTab.home,
+        ),
+        body: Padding(
         padding: const EdgeInsets.only(top: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,7 +275,7 @@ class AvailabilityScreen extends StatelessWidget {
                   Icon(Icons.calendar_month, color: HexColor('#004271')),
                   SizedBox(width: 8),
                   Text(
-                    selectedDate,
+                    widget.selectedDate,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -282,7 +309,7 @@ class AvailabilityScreen extends StatelessWidget {
               child: Wrap(
                 spacing: 16,
                 runSpacing: 16,
-                children: selectedTimes.map(
+                children: widget.selectedTimes.map(
                       (time) => Container(
                     width: 108,
                     height: 46,

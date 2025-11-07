@@ -141,33 +141,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      text: "Don’t have an account? ",
-                      style: TextStyle(color: Colors.black54),
-                      children: [
-                        TextSpan(
-                          text: "Sign up here",
-                          style: TextStyle(
-                            color: Color(0xff004c8c),
-                            fontWeight: FontWeight.bold,
-                          ),
-                          recognizer:
-                          TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignupScreen(),
-                                ),
-                              );
-                            },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Center(
+                //   child: RichText(
+                //     text: TextSpan(
+                //       text: "Don’t have an account? ",
+                //       style: TextStyle(color: Colors.black54),
+                //       children: [
+                //         TextSpan(
+                //           text: "Sign up here",
+                //           style: TextStyle(
+                //             color: Color(0xff004c8c),
+                //             fontWeight: FontWeight.bold,
+                //           ),
+                //           recognizer:
+                //           TapGestureRecognizer()
+                //             ..onTap = () {
+                //               Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                   builder: (context) => SignupScreen(),
+                //                 ),
+                //               );
+                //             },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

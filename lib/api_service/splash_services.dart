@@ -3,6 +3,7 @@ import '../auth/login_page.dart';
 import '../dashboard/main_home_screen.dart';
 import '../prefs/app_preference.dart';
 import '../prefs/preferece_keys.dart';
+import '../utils/enum.dart';
 
 
 class SplashServices {
@@ -26,7 +27,7 @@ class SplashServices {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) =>  MainHomeScreen()),
+        MaterialPageRoute(builder: (context) =>   MainHomeScreen(initialTab: BottomTab.home,)),
       );
     }
   }

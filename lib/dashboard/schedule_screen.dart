@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:service_app_qwickhome/dashboard/punch_in.dart';
+import 'package:service_app_qwickhome/utils/size.dart';
 import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
 import 'manage_time.dart';
@@ -256,6 +258,7 @@ class ScheduleCard extends StatelessWidget {
     required this.service,
     required this.time,
     required this.address,
+    //required this.status,
     required this.badge,
     Key? key,
   }) : super(key: key);
@@ -320,6 +323,18 @@ class ScheduleCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    h20,
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        "View Details about the Service",
+                        style: TextStyle(
+                          color: HexColor('#004271'),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -329,22 +344,11 @@ class ScheduleCard extends StatelessWidget {
           Divider(color: Colors.grey[300], thickness: 1),
           const SizedBox(height: 6),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  "View Details about the Service",
-                  style: TextStyle(
-                    color: HexColor('#004271'),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
               Container(
-                width: 107,
-                height: 30,
+                width: 136,
+                height: 35,
                 decoration: BoxDecoration(
                   color: HexColor('#E4F9FF'),
                   borderRadius: BorderRadius.circular(10),
@@ -355,7 +359,30 @@ class ScheduleCard extends StatelessWidget {
                   style: TextStyle(
                     color: HexColor('#098bd9'),
                     fontWeight: FontWeight.bold,
-                    fontSize: 13.5,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+
+              InkWell(
+                onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PunchInScreen()));
+                },
+                child: Container(
+                  width: 136,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    color: HexColor('#004271'),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Punch In right now",
+                    style: TextStyle(
+                      color: HexColor('#FFFFFF'),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),

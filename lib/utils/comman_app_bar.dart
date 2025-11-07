@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import '../dashboard/notification_screen.dart';
 
 class CommanAppBar extends StatelessWidget implements PreferredSizeWidget {
+
   const CommanAppBar({super.key});
 
   @override

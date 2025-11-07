@@ -6,3 +6,5 @@ const String getNotifications = "notifications";
 const String getnotifactionRead = "markAsReadNotification";
 const String  geTimeandDateOptions = "ServiceProviderAvailabilityOptions";
 const String  ServiceProviderAvailability = "ServiceProviderSetAvailability";
+const String  AcceptBooking = "ServiceProviderAcceptBooking";
+const String  CancelBooking = "ServiceProviderCancelBooking";

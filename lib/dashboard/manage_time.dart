@@ -323,7 +323,7 @@ class _ManageAvailabilityScreenState extends State<ManageAvailabilityScreen> {
         );
 
         // Optional: Navigate after success
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => AvailabilityScreen(

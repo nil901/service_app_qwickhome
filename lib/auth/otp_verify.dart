@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../dashboard/main_home_screen.dart';
+import '../utils/enum.dart';
 
 
 class OtpVerify extends StatefulWidget {
@@ -74,7 +75,7 @@ class _OtpVerifyState extends State<OtpVerify> {
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  MainHomeScreen()),
+            MaterialPageRoute(builder: (context) =>  MainHomeScreen(initialTab: BottomTab.home,)),
           );
         });
       } else {
