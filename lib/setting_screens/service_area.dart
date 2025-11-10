@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:hexcolor/hexcolor.dart';
 import '../utils/custom_app_bar.dart';
 
 class ServiceAreasScreen extends StatelessWidget {
@@ -9,27 +10,26 @@ class ServiceAreasScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: 'Service Areas'),
+      appBar: const CustomAppBar(title: 'Service Areas'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// ✅ Base Location Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.shade300, width: 1.2),
+                border: Border.all(color: HexColor('#C2C2C2'), width: 1),
                 color: Colors.white,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Base Location",
+                    'Base Location',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                   ),
                   const SizedBox(height: 8),
@@ -37,10 +37,38 @@ class ServiceAreasScreen extends StatelessWidget {
                     "Your Primary Location",
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
 
-                  _locationField(Icons.location_on_outlined,
-                      "Business Bay, Mumbai Naka", "This is where you're primarily based"),
+                  /// ✅ Location Box
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.location,
+                          size: 16,
+                          color: Colors.blue.shade600,
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Business Bay, Mumbai Naka',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10,),
+                  Text('This is where you’re primarily based', style: TextStyle(
+                    fontSize: 12,
+                    color: HexColor('#353535'),
+                  ),)
                 ],
               ),
             ),
@@ -71,7 +99,15 @@ class ServiceAreasScreen extends StatelessWidget {
                   const SizedBox(height: 12),
 
                   _serviceAreaItem("Govind Nagar"),
+                  Divider(
+                    color: Colors.grey.shade300,
+                    thickness: 1,
+                  ),
                   _serviceAreaItem("Gangapur Road"),
+                  Divider(
+                    color: Colors.grey.shade300,
+                    thickness: 1,
+                  ),
                   _serviceAreaItem("College Road"),
                 ],
               ),
@@ -86,14 +122,14 @@ class ServiceAreasScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF004271),
+                  backgroundColor: HexColor('#004271'),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 child: const Text(
                   "Save Changes",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
@@ -105,37 +141,7 @@ class ServiceAreasScreen extends StatelessWidget {
     );
   }
 
-  /// Location Field UI
-  Widget _locationField(IconData icon, String title, String subtitle) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.blue.shade600),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w600)),
-                Text(subtitle,
-                    style: const TextStyle(fontSize: 11, color: Colors.black54)),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// Service Area Row
+  /// ✅ Service Area Row
   Widget _serviceAreaItem(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),

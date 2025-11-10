@@ -8,3 +8,5 @@ const String  geTimeandDateOptions = "ServiceProviderAvailabilityOptions";
 const String  ServiceProviderAvailability = "ServiceProviderSetAvailability";
 const String  AcceptBooking = "ServiceProviderAcceptBooking";
 const String  CancelBooking = "ServiceProviderCancelBooking";
+const String viewService = "view-service";
+const String  punchInDetailPageGet = "punchIn_detailPage";

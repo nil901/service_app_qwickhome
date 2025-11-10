@@ -1,130 +1,170 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 import '../utils/custom_app_bar.dart';
 
-class ServiceDetailsScreen extends StatelessWidget {
+class ServiceDetailsScreen extends StatefulWidget {
   const ServiceDetailsScreen({super.key});
 
+  @override
+  State<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
+}
+
+class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Service Details'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            /// 🔴 Security Banner
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3F3),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFFFD1D1)),
-              ),
-              child: Row(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline, color: Colors.red),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      "Information Protected\n"
-                          "For security reasons, service details cannot be edited directly. "
-                          "To update your information, please request changes through our admin team.",
-                      style: TextStyle(fontSize: 12, height: 1.3),
+                  Container(
+                    height: 107,
+                    // width: double.infinity,
+                    padding: EdgeInsets.only(left: 20, right: 12, top: 8, bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE6F7FF),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: HexColor('#004271')),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center, // ✅ center align
+                          children: [
+                            Image.asset('assets/images/alert.png', height: 20, width: 18),
+                            SizedBox(width: 10),
+
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5.0),
+                              child: Image.asset('assets/images/lock.png', height: 15, width: 12),
+                            ),
+                            SizedBox(width: 6),
+
+                            Text(
+                              "Information Protected",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 14),
+                        Text(
+                          "For security reasons, personal information cannot be edited directly. To update your information, "
+                              "please request changes through our admin team.",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black87,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
+                  const SizedBox(height: 16),
 
-            const SizedBox(height: 16),
+                  /// ✅ Primary Service Section
+                  _sectionCard(
+                    title: "Primary Service",
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label("Service Category"),
+                        _disabledField("Plumber"),
 
-            /// ✅ Primary Service Section
-            _sectionCard(
-              title: "Primary Service",
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _label("Service Category"),
-                  _disabledField("Plumber"),
+                        const SizedBox(height: 12),
+                        _label("Service Description"),
+                        _disabledField(
+                          "Professional plumbing services for residential and commercial properties. Licensed and insured with 5+ years of experience.",
+                          maxLines: 3,
+                        ),
 
-                  const SizedBox(height: 12),
-                  _label("Service Description"),
-                  _disabledField(
-                    "Professional plumbing services for residential and commercial properties. Licensed and insured with 5+ years of experience.",
-                    maxLines: 3,
+                        const SizedBox(height: 12),
+                        _label("Years of Experience"),
+                        _disabledField("5"),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 12),
-                  _label("Years of Experience"),
-                  _disabledField("5"),
+
+                  /// ✅ Services Offered
+                  _sectionCard(
+                    title: "Services Offered",
+                    showLock: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text("All the services that you offer",
+                            style: TextStyle(fontSize: 12, color: Colors.black54)),
+
+                        SizedBox(height: 12),
+
+                        Text("• Plumbing Repair"),
+                        Text("• Pipe Installation"),
+                        Text("• Bathroom Plumbing"),
+                        Text("• Kitchen Plumbing"),
+                        Text("• Water Heater Service"),
+                        Text("• Leak Detection"),
+
+                        SizedBox(height: 12),
+
+                        Text("Edit services",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13)),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
-
-            const SizedBox(height: 12),
-
-            /// ✅ Services Offered
-            _sectionCard(
-              title: "Services Offered",
-              showLock: true,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("All the services that you offer",
-                      style: TextStyle(fontSize: 12, color: Colors.black54)),
-
-                  SizedBox(height: 12),
-
-                  Text("• Plumbing Repair"),
-                  Text("• Pipe Installation"),
-                  Text("• Bathroom Plumbing"),
-                  Text("• Kitchen Plumbing"),
-                  Text("• Water Heater Service"),
-                  Text("• Leak Detection"),
-
-                  SizedBox(height: 12),
-
-                  Text("Edit services",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13)),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            /// ✅ Request Changes Button
-            SizedBox(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            child: SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 44,
               child: ElevatedButton(
-                onPressed: () {
-                  _openRequestDialog(context);
-                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF004271),
+                  backgroundColor: HexColor('#004271'),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+                onPressed: () {
+
+                },
+
                 child: const Text(
                   "Request Changes",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+        ],
       ),
+
     );
   }
 
@@ -147,7 +187,7 @@ class ServiceDetailsScreen extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
               if (showLock) ...[
                 const Spacer(),
-                const Icon(Icons.lock_outline, size: 18, color: Colors.grey),
+                Image.asset('assets/images/lock.png', height: 25, width: 20),
               ]
             ],
           ),
@@ -165,7 +205,7 @@ class ServiceDetailsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       decoration: BoxDecoration(
         color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         text,

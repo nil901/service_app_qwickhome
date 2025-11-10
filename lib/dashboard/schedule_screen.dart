@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:service_app_qwickhome/dashboard/punch_in.dart';
+import 'package:service_app_qwickhome/dashboard/service_details_screen.dart';
 import 'package:service_app_qwickhome/utils/size.dart';
 import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
@@ -20,7 +21,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   ScheduleModel? scheduleData;
   int selectedDayIndex = 0;
   bool isLoading = false;
-
 
   @override
   void initState() {
@@ -53,204 +53,220 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: 'Schedule'),
       backgroundColor: kwhite,
-      body: scheduleData == null
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ManageAvailabilityScreen(),
-                  ),
-                );
-              },
-              child: Row(
+      body:
+          scheduleData == null
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.add_circle_outline,
-                    color: HexColor('#004271'),
-                    size: 22,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    "Add your availability",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      decorationThickness: 2,
-                      decorationColor: HexColor('#004271'),
-                      fontWeight: FontWeight.w500,
-                      color: HexColor('#004271'),
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // 🔹 Month label + background strip + day selector
-          Container(
-            height: 70,
-            width: double.infinity,
-            color: HexColor('#E4F9FF'),
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: scheduleData!.data.dates.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  // Month label dynamically from first date
-                  String month =
-                      scheduleData!.data.dates[0].month;
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0),
-                      child: Text(
-                        month,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  int dayIndex = index - 1;
-                  bool isSelected = selectedDayIndex == dayIndex;
-                  final date = scheduleData!.data.dates[dayIndex];
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedDayIndex = dayIndex;
-                      });
-                      fetchSchedule(date: date.date);
-                    },
-                    child: Container(
-                      width: 55,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? HexColor('#004271')
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            date.day,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.grey[700],
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ManageAvailabilityScreen(),
                           ),
-                          const SizedBox(height: 2),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add_circle_outline,
+                            color: HexColor('#004271'),
+                            size: 22,
+                          ),
+                          const SizedBox(width: 6),
                           Text(
-                            date.date.split("-").last,
+                            "Add your availability",
                             style: TextStyle(
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.grey[800],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                              decorationThickness: 2,
+                              decorationColor: HexColor('#004271'),
+                              fontWeight: FontWeight.w500,
+                              color: HexColor('#004271'),
+                              fontSize: 16,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  );
-                }
-              },
-            ),
-          ),
-
-          const SizedBox(height: 22),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Text(
-              scheduleData!
-                  .data.dates[selectedDayIndex].formatted,
-              style: const TextStyle(
-                fontSize: 16.5,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-          const SizedBox(height: 17),
-
-          Expanded(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator(
-              color: Color(0xFF004271),
-            ))
-            : scheduleData!.data.todaysAcceptedBookings.isEmpty
-                ? Center(
-                            child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                Image.asset(
-                  'assets/images/no_data_found.png',
-                  height: 140,
-                  width: 180,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "No Data found!",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
                   ),
-                ),
-                            ],
-                          ),
-                          ) : Expanded(
-              child: ListView.builder(
-                //physics:NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: scheduleData!
-                    .data.todaysAcceptedBookings.length,
-                itemBuilder: (context, index) {
-                  final booking = scheduleData!
-                      .data.todaysAcceptedBookings[index];
-                  return ScheduleCard(
-                    img: booking.customerDetails.image,
-                    name: booking.customerDetails.name,
-                    service: booking.serviceDetails.name,
-                    time:
-                    "${booking.scheduledDate}, ${booking.preferredTime}",
-                    address: booking.customerDetails.email,
-                    badge: booking.bookingType.toUpperCase(),
-                  );
-                },
+                  const SizedBox(height: 20),
+
+                  // 🔹 Month label + background strip + day selector
+                  Container(
+                    height: 70,
+                    width: double.infinity,
+                    color: HexColor('#E4F9FF'),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      itemCount: scheduleData!.data.dates.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 10),
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          // Month label dynamically from first date
+                          String month = scheduleData!.data.dates[0].month;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Text(
+                                month,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          int dayIndex = index - 1;
+                          bool isSelected = selectedDayIndex == dayIndex;
+                          final date = scheduleData!.data.dates[dayIndex];
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedDayIndex = dayIndex;
+                              });
+                              fetchSchedule(date: date.date);
+                            },
+                            child: Container(
+                              width: 55,
+                              decoration: BoxDecoration(
+                                color:
+                                    isSelected
+                                        ? HexColor('#004271')
+                                        : Colors.transparent,
+                                borderRadius: BorderRadius.circular(0),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    date.day,
+                                    style: TextStyle(
+                                      color:
+                                          isSelected
+                                              ? Colors.white
+                                              : Colors.grey[700],
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    date.date.split("-").last,
+                                    style: TextStyle(
+                                      color:
+                                          isSelected
+                                              ? Colors.white
+                                              : Colors.grey[800],
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 22),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      scheduleData!.data.dates[selectedDayIndex].formatted,
+                      style: const TextStyle(
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 17),
+
+                  Expanded(
+                    child:
+                        isLoading
+                            ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF004271),
+                              ),
+                            )
+                            : scheduleData!.data.todaysAcceptedBookings.isEmpty
+                            ? Center(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .center, // Center vertically
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/no_data_found.png',
+                                    height: 140,
+                                    width: 180,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    "No Data found!",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            : Expanded(
+                              child: ListView.builder(
+                                //physics:NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount:
+                                    scheduleData!
+                                        .data
+                                        .todaysAcceptedBookings
+                                        .length,
+                                itemBuilder: (context, index) {
+                                  final booking =
+                                      scheduleData!
+                                          .data
+                                          .todaysAcceptedBookings[index];
+                                  return ScheduleCard(
+                                    img: booking.customerDetails.image,
+                                    name: booking.customerDetails.name,
+                                    service: booking.serviceDetails.name,
+                                    time:
+                                        "${booking.scheduledDate}, ${booking.preferredTime}",
+                                    address: booking.customerDetails.email,
+                                    badge: booking.bookingType.toUpperCase(),
+                                    booking: booking,
+                                  );
+                                },
+                              ),
+                            ),
+                  ),
+                  SizedBox(height: 8),
+                ],
               ),
-            ),
-          ),
-         SizedBox(height: 100),
-        ],
-      ),
     );
   }
 }
 
 class ScheduleCard extends StatelessWidget {
   final String img, name, service, time, address, badge;
+  final dynamic booking;
 
   const ScheduleCard({
     required this.img,
@@ -258,8 +274,8 @@ class ScheduleCard extends StatelessWidget {
     required this.service,
     required this.time,
     required this.address,
-    //required this.status,
     required this.badge,
+    required this.booking,
     Key? key,
   }) : super(key: key);
 
@@ -286,10 +302,7 @@ class ScheduleCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(img),
-              ),
+              CircleAvatar(radius: 20, backgroundImage: NetworkImage(img)),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -298,9 +311,10 @@ class ScheduleCard extends StatelessWidget {
                     Text(
                       name,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15.5,
-                          color: Colors.black),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.5,
+                        color: Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 3),
                     Text(
@@ -325,7 +339,18 @@ class ScheduleCard extends StatelessWidget {
                     ),
                     h20,
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ServicesDetailsScreen(
+                                  serviceId: booking.serviceDetails.id,
+                                  name: booking.serviceDetails.name,
+                                ),
+                          ),
+                        );
+                      },
                       child: Text(
                         "View Details about the Service",
                         style: TextStyle(
@@ -366,7 +391,14 @@ class ScheduleCard extends StatelessWidget {
 
               InkWell(
                 onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PunchInScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PunchInScreen(
+                        bookingId: booking.bookingId.toString(),
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   width: 136,
@@ -393,6 +425,3 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 }
-
-
-

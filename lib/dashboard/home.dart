@@ -414,6 +414,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:service_app_qwickhome/dashboard/main_home_screen.dart';
+import 'package:service_app_qwickhome/dashboard/service_details_screen.dart';
 import 'package:service_app_qwickhome/utils/enum.dart';
 import '../api_service/api_services.dart';
 import '../api_service/urls.dart';
@@ -586,6 +587,7 @@ class _FilterButtonState extends State<FilterButton> {
 class BookingCard extends StatefulWidget {
   final Data data;
 
+
   const BookingCard({required this.data});
 
   @override
@@ -595,6 +597,7 @@ class BookingCard extends StatefulWidget {
 class _BookingCardState extends State<BookingCard> {
   bool isDeclinedSelected = false;
   bool isAcceptedSelected = false;
+
 
   Future<void> acceptBooking(BuildContext context,String bookingId) async {
     try {
@@ -791,12 +794,26 @@ class _BookingCardState extends State<BookingCard> {
             ],
           ),
           const SizedBox(height: 10),
-          Text(
-            "View Details about the Service",
-            style: TextStyle(
-              color: HexColor('#004271'),
-              fontWeight: FontWeight.w600,
-              fontSize: 12,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ServicesDetailsScreen(
+                    serviceId: widget.data.serviceDetails!.id ?? 0,
+                    name: widget.data.serviceDetails!.name ?? "",
+                  ),
+                ),
+              );
+            },
+
+            child: Text(
+              "View Details about the Service",
+              style: TextStyle(
+                color: HexColor('#004271'),
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
             ),
           ),
           // ✅ Show Accept/Decline buttons only for Pending (All tab)

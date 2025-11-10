@@ -105,7 +105,7 @@ class AboutUsScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_box, size: 20, color: Color(0xFF007AFF)),
+          const Icon(Icons.check_box, size: 25, color: Colors.grey),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
