@@ -213,4 +213,41 @@ class ApiService {
     }
   }
 
+  // ✅ Multipart API method
+  // static Future<Response> postMultipart(String url, FormData formData) async {
+  //   try {
+  //     Dio dio = Dio();
+  //     return await dio.post(
+  //       url,
+  //       data: formData,
+  //       options: Options(
+  //         headers: {
+  //           "Accept": "application/json",
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     throw Exception("Multipart Error: $e");
+  //   }
+  // }
+  static Future<Response> postMultipart(String endpoint, FormData formData) async {
+    try {
+      return await _dio.post(
+        endpoint.startsWith("http") ? endpoint : "$baseUrl$endpoint",
+        data: formData,
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+          },
+        ),
+      );
+    } catch (e) {
+      throw Exception("Multipart Error: $e");
+    }
+  }
+
+
+
+
 }

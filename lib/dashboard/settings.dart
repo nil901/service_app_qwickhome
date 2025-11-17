@@ -271,6 +271,7 @@ import 'package:flutter/material.dart';
 import '../colors/colors.dart';
 import '../setting_screens/about_us.dart';
 import '../setting_screens/account&Security.dart';
+import '../setting_screens/payment_screen.dart';
 import '../setting_screens/personal_info.dart';
 import '../setting_screens/service_area.dart';
 import '../setting_screens/service_details.dart';
@@ -377,7 +378,7 @@ class SettingScreen extends StatelessWidget {
               "Bank details, payment methods",
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => AccountSecurityScreen(),
+                  builder: (_) => PaymentBankingScreen(),
                 ));
               },
             ),

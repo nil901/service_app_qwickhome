@@ -4,6 +4,7 @@ import 'package:service_app_qwickhome/dashboard/punch_in.dart';
 import 'package:service_app_qwickhome/dashboard/service_details_screen.dart';
 import 'package:service_app_qwickhome/utils/size.dart';
 import '../colors/colors.dart';
+import '../dummyscreen/map_dummy.dart';
 import '../utils/custom_app_bar.dart';
 import 'manage_time.dart';
 import '../models/schedule_model.dart';
@@ -79,16 +80,31 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             size: 22,
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            "Add your availability",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationThickness: 2,
-                              decorationColor: HexColor('#004271'),
-                              fontWeight: FontWeight.w500,
-                              color: HexColor('#004271'),
-                              fontSize: 16,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                "Add your availability",
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  decorationThickness: 2,
+                                  decorationColor: HexColor('#004271'),
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor('#004271'),
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(width:30),
+                              InkWell(
+                                onTap: (){
+                                 Navigator.push(context , MaterialPageRoute(builder: (context)=> ProviderTrackingPage()));
+                                },
+                                child: Text("yaha tap kar map dikhega", style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor('#004271'),
+                                  fontSize: 15,
+                                ),),
+                              )
+                            ],
                           ),
                         ],
                       ),
