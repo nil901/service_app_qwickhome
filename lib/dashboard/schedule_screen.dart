@@ -98,10 +98,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 onTap: (){
                                  Navigator.push(context , MaterialPageRoute(builder: (context)=> ProviderTrackingPage()));
                                 },
-                                child: Text("yaha tap kar map dikhega", style: TextStyle(
+                                child: Text("Dummy Map ",  style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  decorationThickness: 2,
+                                  decorationColor: HexColor('#004271'),
                                   fontWeight: FontWeight.w500,
                                   color: HexColor('#004271'),
-                                  fontSize: 15,
+                                  fontSize: 14,
                                 ),),
                               )
                             ],

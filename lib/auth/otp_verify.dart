@@ -74,14 +74,11 @@ class _OtpVerifyState extends State<OtpVerify> {
             ),
           );
 
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) =>  MainHomeScreen(initialTab: BottomTab.home,)),
-          // );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => SetupServices()),
+            MaterialPageRoute(builder: (context) =>  MainHomeScreen(initialTab: BottomTab.home,)),
           );
+
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

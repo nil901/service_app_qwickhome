@@ -248,6 +248,23 @@ class ApiService {
   }
 
 
+  static Future<Response> requestProfileChangeAPI(FormData formData) async {
+    try {
+      final response = await Dio().post(
+        requestProfileChangeUrl,
+        data: formData,
+        options: Options(
+          headers: {"Accept": "application/json"},
+        ),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
 
 
 }

@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController(
-    text: "+1555123456",
+    text: "6857634583",
   );
   bool isLoading = false;
 
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (phone.isEmpty) {
       _showToast('Please enter mobile number');
       return;
-    } else if (phone.length != 11) {
+    } else if (phone.length != 10) {
       _showToast('Mobile number must be 10 digits');
       return;
     }

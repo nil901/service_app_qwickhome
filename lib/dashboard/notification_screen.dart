@@ -210,7 +210,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       });
       if (response.data['status'] == true) {
         final data = response.data['data']['notifications'] as List;
-        ref.read(notifactionProvider.notifier).state =
+        ref.read(notificationProvider.notifier).state =
             data.map((json) => NotifactionModel.fromJson(json)).toList();
       } else {
         print("Failed: ${response.data['message']}");
@@ -230,7 +230,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final notifications = ref.watch(notifactionProvider);
+    final notifications = ref.watch(notificationProvider);
     final filteredNotifications = showUnread
         ? notifications.where((n) => n.readAt == null).toList()
         : notifications;

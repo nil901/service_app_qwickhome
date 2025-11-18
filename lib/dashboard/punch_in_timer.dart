@@ -566,14 +566,6 @@ class _TimerScreenState extends State<TimerScreen> {
 
                   SizedBox(height: 10),
 
-                  // TextField(
-                  //   controller: midNotesCtrl,
-                  //   maxLines: 2,
-                  //   decoration: InputDecoration(
-                  //     hintText: "Add notes...",
-                  //     border: OutlineInputBorder(),
-                  //   ),
-                  // ),
                   Text("Elapsed Time : 1 hr 15 mins", style: TextStyle(fontSize: 13)),
                   Text("Estimated Time Left : 45 mins", style: TextStyle(fontSize: 13)),
 
