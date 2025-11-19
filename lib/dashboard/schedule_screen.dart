@@ -248,32 +248,30 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 ],
                               ),
                             )
-                            : Expanded(
-                              child: ListView.builder(
-                                //physics:NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount:
+                            : ListView.builder(
+                              //physics:NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount:
+                                  scheduleData!
+                                      .data
+                                      .todaysAcceptedBookings
+                                      .length,
+                              itemBuilder: (context, index) {
+                                final booking =
                                     scheduleData!
                                         .data
-                                        .todaysAcceptedBookings
-                                        .length,
-                                itemBuilder: (context, index) {
-                                  final booking =
-                                      scheduleData!
-                                          .data
-                                          .todaysAcceptedBookings[index];
-                                  return ScheduleCard(
-                                    img: booking.customerDetails.image,
-                                    name: booking.customerDetails.name,
-                                    service: booking.serviceDetails.name,
-                                    time:
-                                        "${booking.scheduledDate}, ${booking.preferredTime}",
-                                    address: booking.customerDetails.email,
-                                    badge: booking.bookingType.toUpperCase(),
-                                    booking: booking,
-                                  );
-                                },
-                              ),
+                                        .todaysAcceptedBookings[index];
+                                return ScheduleCard(
+                                  img: booking.customerDetails.image,
+                                  name: booking.customerDetails.name,
+                                  service: booking.serviceDetails.name,
+                                  time:
+                                      "${booking.scheduledDate}, ${booking.preferredTime}",
+                                  address: booking.customerDetails.addresses.first.addressDetails,
+                                  badge: booking.bookingType.toUpperCase(),
+                                  booking: booking,
+                                );
+                              },
                             ),
                   ),
                   SizedBox(height: 8),
@@ -428,7 +426,7 @@ class ScheduleCard extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    "Punch In right now",
+                    "Start your Service",
                     style: TextStyle(
                       color: HexColor('#FFFFFF'),
                       fontWeight: FontWeight.bold,

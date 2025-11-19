@@ -13,4 +13,6 @@ const String  punchInDetailPageGet = "punchIn_detailPage";
 const String  updateMidProgressUrl = "updateMidProgress";
 const String  get_personal_info = "getServiceProviderPersonalInfo";
 const String punchInUrl = "${baseUrl}punchIn";
+const String punchOutUrl = "${baseUrl}punchOut";
 const String requestProfileChangeUrl = "${baseUrl}requestProfileChange";
+const String GetTimerUrl = "${baseUrl}Timer";

@@ -110,6 +110,7 @@ class CustomerDetails {
   final String email;
   final String phone;
   final String image;
+  final List<CustomerAddress> addresses;
 
   CustomerDetails({
     required this.id,
@@ -117,6 +118,7 @@ class CustomerDetails {
     required this.email,
     required this.phone,
     required this.image,
+    required this.addresses,
   });
 
   factory CustomerDetails.fromJson(Map<String, dynamic> json) {
@@ -126,21 +128,62 @@ class CustomerDetails {
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
       image: json['image'] ?? '',
+      addresses: (json['addresses'] as List)
+          .map((e) => CustomerAddress.fromJson(e))
+          .toList(),
     );
   }
 }
+
+class CustomerAddress {
+  final int id;
+  final int userId;
+  final String contactDetails;
+  final String addressDetails;
+  final String type;
+  final bool isDefault;
+
+  CustomerAddress({
+    required this.id,
+    required this.userId,
+    required this.contactDetails,
+    required this.addressDetails,
+    required this.type,
+    required this.isDefault,
+  });
+
+  factory CustomerAddress.fromJson(Map<String, dynamic> json) {
+    return CustomerAddress(
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      contactDetails: json['contact_details'] ?? '',
+      addressDetails: json['address_details'] ?? '',
+      type: json['type'] ?? '',
+      isDefault: json['is_default'] ?? false,
+    );
+  }
+}
+
 
 class ServiceDetails {
   final int id;
   final String name;
   final String description;
   final String image;
+  final String? priceOnetime;
+  final String? priceWeekly;
+  final String? priceMonthly;
+  final String? priceYearly;
 
   ServiceDetails({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
+    this.priceOnetime,
+    this.priceWeekly,
+    this.priceMonthly,
+    this.priceYearly,
   });
 
   factory ServiceDetails.fromJson(Map<String, dynamic> json) {
@@ -149,6 +192,10 @@ class ServiceDetails {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       image: json['image'] ?? '',
+      priceOnetime: json['price_onetime'],
+      priceWeekly: json['price_weekly'],
+      priceMonthly: json['price_monthly'],
+      priceYearly: json['price_yearly'],
     );
   }
 }
