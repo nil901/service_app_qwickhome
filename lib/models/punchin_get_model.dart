@@ -1,35 +1,39 @@
 class PunchInDetailModel {
-  bool? success;
-  int? statusCode;
-  String? message;
-  PunchInData? data;
+  final bool success;
+  final int statusCode;
+  final String message;
+  final PunchInData? data;
 
-  PunchInDetailModel({this.success, this.statusCode, this.message, this.data});
+  PunchInDetailModel({
+    required this.success,
+    required this.statusCode,
+    required this.message,
+    required this.data,
+  });
 
   factory PunchInDetailModel.fromJson(Map<String, dynamic> json) {
     return PunchInDetailModel(
-      success: json['success'],
-      statusCode: json['status_code'],
-      message: json['message'],
+      success: json['success'] ?? false,
+      statusCode: json['status_code'] ?? 0,
+      message: json['message'] ?? "",
       data: json['data'] != null ? PunchInData.fromJson(json['data']) : null,
     );
   }
 }
-
 class PunchInData {
-  int? bookingId;
-  String? bookingReference;
-  String? scheduledDate;
-  String? preferredTime;
-  String? status;
-  String? totalAmount;
-  String? currency;
-  String? bookingType;
-  String? customerNotes;
+  final int? bookingId;
+  final String? bookingReference;
+  final String? scheduledDate;
+  final String? preferredTime;
+  final String? status;
+  final String? totalAmount;
+  final String? currency;
+  final String? bookingType;
+  final String? customerNotes;
 
-  UserDetails? userDetails;
-  ServiceDetails? serviceDetails;
-  DefaultAddress? defaultAddress;
+  final UserDetails? userDetails;
+  final ServiceDetails? serviceDetails;
+  final DefaultAddress? defaultAddress;
 
   PunchInData({
     this.bookingId,
@@ -57,61 +61,88 @@ class PunchInData {
       currency: json["currency"],
       bookingType: json["booking_type"],
       customerNotes: json["customer_notes"],
-      userDetails: UserDetails.fromJson(json["user_details"]),
-      serviceDetails: ServiceDetails.fromJson(json["service_details"]),
-      defaultAddress: DefaultAddress.fromJson(json["default_address"]),
+
+      userDetails: json["user_details"] != null
+          ? UserDetails.fromJson(json["user_details"])
+          : null,
+
+      serviceDetails: json["service_details"] != null
+          ? ServiceDetails.fromJson(json["service_details"])
+          : null,
+
+      defaultAddress: json["default_address"] != null
+          ? DefaultAddress.fromJson(json["default_address"])
+          : null,
     );
   }
 }
-
 class UserDetails {
-  int? id;
-  String? name;
-  String? email;
-  String? phone;
-  String? image;
+  final int? id;
+  final String? name;
+  final String? email;
+  final String? phone;
+  final String? image;
 
   UserDetails({this.id, this.name, this.email, this.phone, this.image});
 
   factory UserDetails.fromJson(Map<String, dynamic> json) {
     return UserDetails(
       id: json["id"],
-      name: json["name"],
-      email: json["email"],
-      phone: json["phone"],
-      image: json["image"],
+      name: json["name"] ?? "",
+      email: json["email"] ?? "",
+      phone: json["phone"] ?? "",
+      image: json["image"] ?? "",
     );
   }
 }
-
 class ServiceDetails {
-  int? id;
-  String? name;
-  String? description;
-  String? image;
+  final int? id;
+  final String? name;
+  final String? description;
+  final String? image;
 
   ServiceDetails({this.id, this.name, this.description, this.image});
 
   factory ServiceDetails.fromJson(Map<String, dynamic> json) {
     return ServiceDetails(
       id: json["id"],
-      name: json["name"],
-      description: json["description"],
-      image: json["image"],
+      name: json["name"] ?? "",
+      description: json["description"] ?? "",
+      image: json["image"] ?? "",
     );
   }
 }
-
 class DefaultAddress {
-  int? id;
-  String? addressDetails;
+  final int? id;
+  final int? userId;
+  final String? contactDetails;
+  final String? addressDetails;
+  final String? type;
+  final bool? isDefault;
+  final String? createdAt;
+  final String? updatedAt;
 
-  DefaultAddress({this.id, this.addressDetails});
+  DefaultAddress({
+    this.id,
+    this.userId,
+    this.contactDetails,
+    this.addressDetails,
+    this.type,
+    this.isDefault,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   factory DefaultAddress.fromJson(Map<String, dynamic> json) {
     return DefaultAddress(
       id: json["id"],
+      userId: json["user_id"],
+      contactDetails: json["contact_details"],
       addressDetails: json["address_details"],
+      type: json["type"],
+      isDefault: json["is_default"],
+      createdAt: json["created_at"],
+      updatedAt: json["updated_at"],
     );
   }
 }

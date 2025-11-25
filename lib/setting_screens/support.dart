@@ -1,8 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:service_app_qwickhome/utils/custom_app_bar.dart';
+import '../api_service/api_services.dart';
+import '../api_service/urls.dart';
+import '../prefs/app_preference.dart';
+import '../prefs/preferece_keys.dart';
 
-class SupportScreen extends StatelessWidget {
+class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
+
+  @override
+  State<SupportScreen> createState() => _SupportScreenState();
+}
+
+class _SupportScreenState extends State<SupportScreen> {
+  bool isLoading = false;
+
+  // Contact Section Data
+  String contactLiveChatTitle = "";
+  String contactLiveChatSubtitle = "";
+
+  String contactEmailTitle = "";
+  String contactEmailSubtitle = "";
+
+  String contactPhoneTitle = "";
+  String contactPhoneSubtitle = "";
+
+  List<Map<String, String>> faqList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSupportData();
+  }
+
+  Future<void> fetchSupportData() async {
+    setState(() => isLoading = true);
+
+    try {
+      final response = await ApiService.postRequest(
+        supportApi,
+        {"serviceProviderId": AppPreference().getInt(PreferencesKey.userId)},
+      );
+
+      final data = response.data;
+
+      contactLiveChatTitle = data["contact"]["livechat"]["title"];
+      contactLiveChatSubtitle = data["contact"]["livechat"]["data"];
+
+      contactEmailTitle = data["contact"]["email_support"]["title"];
+      contactEmailSubtitle = data["contact"]["email_support"]["data"];
+
+      contactPhoneTitle = data["contact"]["phone_support"]["title"];
+      contactPhoneSubtitle = data["contact"]["phone_support"]["data"].toString();
+
+      // FAQs
+      faqList = [];
+      final faqMap = data["Frequently Asked Questions (FAQs)"];
+      faqMap.forEach((key, value) {
+        faqList.add({
+          "question": value["question"],
+          "answer": value["answer"],
+        });
+      });
+
+      setState(() => isLoading = false);
+    } catch (e) {
+      debugPrint("Support API Error: $e");
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,22 +77,25 @@ class SupportScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Support'),
-      body: SingleChildScrollView(
+
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Contact Us Section
+            // CONTACT US SECTION
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -42,49 +111,53 @@ class SupportScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+
                   _buildContactTile(
                     icon: Icons.chat_bubble_outline,
-                    title: 'Live chat',
-                    subtitle: 'get instant help from our team',
+                    title: contactLiveChatTitle,
+                    subtitle: contactLiveChatSubtitle,
                     onTap: () {},
                   ),
                   const SizedBox(height: 10),
+
                   _buildContactTile(
                     icon: Icons.email_outlined,
-                    title: 'Email Support',
-                    subtitle: 'Qwikhom@service.com',
+                    title: contactEmailTitle,
+                    subtitle: contactEmailSubtitle,
                     onTap: () {},
                   ),
                   const SizedBox(height: 10),
+
                   _buildContactTile(
                     icon: Icons.phone_outlined,
-                    title: 'Phone Support',
-                    subtitle: '9455862350',
+                    title: contactPhoneTitle,
+                    subtitle: contactPhoneSubtitle,
                     onTap: () {},
                   ),
                 ],
               ),
             ),
+
             const SizedBox(height: 20),
 
-            // FAQ Section
+            // FAQ SECTION
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Frequently Asked Questions',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -92,27 +165,12 @@ class SupportScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  _FAQTile(
-                    question: 'What should I do if a customer cancels?',
-                    answer:
-                    "If a customer cancels, you'll be notified immediately. Check our cancellation policy for details on any compensation you may be entitled to.",
-                  ),
-                  _FAQTile(
-                    question: 'When will I receive my payments?',
-                    answer:
-                    'Payments are processed within 2–3 business days after the service is completed successfully.',
-                  ),
-                  _FAQTile(
-                    question: 'How can I improve my rating?',
-                    answer:
-                    'Provide excellent service, be punctual, and maintain clear communication with your customers.',
-                  ),
-                  _FAQTile(
-                    question: 'How do I verify my account?',
-                    answer:
-                    'You can verify your account by submitting your ID and bank details in the profile section.',
-                  ),
+                  const SizedBox(height: 10),
+
+                  ...faqList.map((faq) => _FAQTile(
+                    question: faq["question"]!,
+                    answer: faq["answer"]!,
+                  )),
                 ],
               ),
             ),
@@ -176,12 +234,12 @@ class _FAQTileState extends State<_FAQTile> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        dividerColor: Colors.transparent, // ❌ Removes the border line
-        splashColor: Colors.transparent, // Removes ripple splash
+        dividerColor: Colors.transparent,
+        splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
       child: ExpansionTile(
-        tilePadding: EdgeInsets.zero, // Align with parent padding
+        tilePadding: EdgeInsets.zero,
         childrenPadding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
         title: Text(
           widget.question,

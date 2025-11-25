@@ -4,14 +4,14 @@ import 'package:hexcolor/hexcolor.dart';
 
 import '../utils/custom_app_bar.dart';
 
-class ServiceDetailsScreen extends StatefulWidget {
-  const ServiceDetailsScreen({super.key});
+class ServiceScreen extends StatefulWidget {
+  const ServiceScreen({super.key});
 
   @override
-  State<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
+  State<ServiceScreen> createState() => _ServiceScreenState();
 }
 
-class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
+class _ServiceScreenState extends State<ServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -16,3 +16,6 @@ const String punchInUrl = "${baseUrl}punchIn";
 const String punchOutUrl = "${baseUrl}punchOut";
 const String requestProfileChangeUrl = "${baseUrl}requestProfileChange";
 const String GetTimerUrl = "${baseUrl}Timer";
+const String supportApi = "Support";
+const String updateApi = "updateLocation";
+const String getLocation = "getLocation";

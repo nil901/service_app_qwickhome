@@ -1,3 +1,375 @@
+// import 'dart:io';
+// import 'package:dio/dio.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_image_compress/flutter_image_compress.dart';
+// import 'package:hexcolor/hexcolor.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:path_provider/path_provider.dart';
+// import 'package:path/path.dart' as p;
+// import 'package:service_app_qwickhome/dashboard/punch_in_timer.dart';
+// import '../colors/colors.dart';
+// import '../utils/custom_app_bar.dart';
+// import '../api_service/api_services.dart';
+// import '../api_service/urls.dart';
+// import '../models/punchin_get_model.dart';
+// import '../prefs/app_preference.dart';
+// import '../prefs/preferece_keys.dart';
+//
+// class PunchInScreen extends StatefulWidget {
+//   final String bookingId;
+//
+//   const PunchInScreen({super.key, required this.bookingId});
+//
+//   @override
+//   State<PunchInScreen> createState() => _PunchInScreenState();
+// }
+//
+// class _PunchInScreenState extends State<PunchInScreen> {
+//   PunchInDetailModel? punchData;
+//   bool loading = false;
+//
+//   File? selectedImage;
+//   final TextEditingController notesController = TextEditingController();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchPunchInDetails();
+//   }
+//
+//   // GET API FIXED
+//   Future<void> fetchPunchInDetails() async {
+//     setState(() => loading = true);
+//
+//     try {
+//       final res = await ApiService.postRequest(
+//         punchInDetailPageGet,
+//         {
+//           "bookingId": int.tryParse(widget.bookingId) ?? widget.bookingId,
+//         },
+//       );
+//
+//       print("Punch GET RAW RESPONSE: ${res.data}");
+//
+//       if (res.data != null && res.data["success"] == true) {
+//         if (res.data["data"] == null) {
+//           print("❌ data null from server");
+//           punchData = null;
+//         } else {
+//           punchData = PunchInDetailModel.fromJson(res.data);
+//         }
+//       }
+//     } catch (e) {
+//       debugPrint("Punch GET Error: $e");
+//     } finally {
+//       setState(() => loading = false);
+//     }
+//   }
+//
+//   Future<File?> compressImage(File file) async {
+//     final dir = await getTemporaryDirectory();
+//     final targetPath = p.join(
+//       dir.path,
+//       "${DateTime.now().millisecondsSinceEpoch}.jpg",
+//     );
+//
+//     XFile? result = await FlutterImageCompress.compressAndGetFile(
+//       file.absolute.path,
+//       targetPath,
+//       quality: 60,
+//     );
+//
+//     if (result == null) return null;
+//     return File(result.path);
+//   }
+//
+//   Future<void> pickImage() async {
+//     final picked = await ImagePicker().pickImage(source: ImageSource.camera);
+//
+//     if (picked != null) {
+//       File original = File(picked.path);
+//       File? compressed = await compressImage(original);
+//
+//       setState(() {
+//         selectedImage = compressed ?? original;
+//       });
+//     }
+//   }
+//
+//   // PUNCH IN API FIXED
+//   Future<void> punchIn() async {
+//     if (selectedImage == null) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text("Please capture a photo 📸")),
+//       );
+//       return;
+//     }
+//
+//     try {
+//       FormData data = FormData.fromMap({
+//         "serviceProvider":
+//         AppPreference().getInt(PreferencesKey.userId).toString(),
+//         "bookingId": widget.bookingId,
+//         "startNotes": notesController.text,
+//         "startTime": DateTime.now().toIso8601String(),
+//         "startImage": await MultipartFile.fromFile(
+//           selectedImage!.path,
+//           filename: selectedImage!.path.split('/').last,
+//         ),
+//       });
+//
+//       final res = await ApiService.postMultipart(punchInUrl, data);
+//
+//       print("API Response: ${res.data}");
+//
+//       if (res.data["success"] == true) {
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//             builder: (_) => TimerScreen(
+//               bookingId: widget.bookingId,
+//               userId:
+//               AppPreference().getInt(PreferencesKey.userId).toString(),
+//
+//               userName:
+//               punchData?.data?.userDetails?.name ?? "No Name",
+//
+//               serviceName:
+//               punchData?.data?.serviceDetails?.name ?? "No Service",
+//
+//               address: punchData
+//                   ?.data
+//                   ?.defaultAddress
+//                   ?.addressDetails ??
+//                   "No Address",
+//
+//               userImage:
+//               punchData?.data?.userDetails?.image ?? "",
+//
+//               scheduleDate:
+//               punchData?.data?.scheduledDate ?? "",
+//
+//               scheduleTime:
+//               punchData?.data?.preferredTime ?? "",
+//
+//               startTime: DateTime.now().toString(),
+//             ),
+//           ),
+//         );
+//       }
+//     } catch (e) {
+//       print("Punch POST Error: $e");
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: CustomAppBar(title: 'Punch In'),
+//       backgroundColor: kwhite,
+//
+//       body: loading || punchData == null
+//           ? Center(child: CircularProgressIndicator())
+//           : SafeArea(
+//         child: SingleChildScrollView(
+//           padding: EdgeInsets.all(10),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Container(
+//                 width: double.infinity,
+//                 margin:
+//                 EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+//                 padding:
+//                 EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+//                 decoration: BoxDecoration(
+//                   color: Colors.white,
+//                   borderRadius: BorderRadius.circular(15),
+//                   border: Border.all(
+//                       color: HexColor('#e5e5e5'), width: 0.85),
+//                   boxShadow: [
+//                     BoxShadow(
+//                       blurRadius: 4,
+//                       color: Colors.black.withOpacity(0.04),
+//                       offset: Offset(0, 2),
+//                     ),
+//                   ],
+//                 ),
+//                 child: _customerInfo(),
+//               ),
+//
+//               SizedBox(height: 20),
+//
+//               Padding(
+//                 padding: EdgeInsets.only(left: 20),
+//                 child: Text(
+//                   'Confirm your arrival time',
+//                   style: TextStyle(
+//                       fontWeight: FontWeight.bold, fontSize: 15),
+//                 ),
+//               ),
+//
+//               SizedBox(height: 8),
+//
+//               // DETAILS CARD
+//               Padding(
+//                 padding: const EdgeInsets.all(14.0),
+//                 child: Container(
+//                   width: double.infinity,
+//                   padding: EdgeInsets.all(20),
+//                   decoration: BoxDecoration(
+//                     color: Color(0xFFFCFCFC),
+//                     borderRadius: BorderRadius.circular(15),
+//                     border:
+//                     Border.all(color: Color(0xFFDBDBDB), width: 0.5),
+//                   ),
+//
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         TimeOfDay.now().format(context),
+//                         style: TextStyle(
+//                             fontSize: 16,
+//                             fontWeight: FontWeight.w600),
+//                       ),
+//
+//                       Text(
+//                         'Address: ${punchData?.data?.defaultAddress?.addressDetails ?? "No address"}',
+//                         style: TextStyle(
+//                             fontSize: 13, color: Colors.black54),
+//                       ),
+//
+//                       SizedBox(height: 16),
+//
+//                       Text(
+//                         'Take a photo at customer location',
+//                         style: TextStyle(
+//                             fontWeight: FontWeight.bold,
+//                             fontSize: 14),
+//                       ),
+//
+//                       SizedBox(height: 10),
+//
+//                       ElevatedButton(
+//                         onPressed: pickImage,
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: Colors.white,
+//                           foregroundColor: Colors.black,
+//                           minimumSize: Size(double.infinity, 44),
+//                         ),
+//                         child: Row(
+//                           children: [
+//                             Icon(Icons.photo_camera),
+//                             SizedBox(width: 8),
+//                             Text('Capture a photo'),
+//                           ],
+//                         ),
+//                       ),
+//
+//                       if (selectedImage != null)
+//                         Padding(
+//                           padding: EdgeInsets.only(top: 10),
+//                           child: Image.file(selectedImage!,
+//                               height: 90,
+//                               fit: BoxFit.cover),
+//                         ),
+//
+//                       SizedBox(height: 12),
+//
+//                       Text('Add notes (optional)',
+//                           style: TextStyle(
+//                               fontSize: 16, color: Colors.black)),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//
+//       bottomNavigationBar: SafeArea(
+//         child: Padding(
+//           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//           child: SizedBox(
+//             height: 48,
+//             child: ElevatedButton(
+//               onPressed: punchIn,
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: HexColor('#004271'),
+//                 shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(15)),
+//               ),
+//               child: Text(
+//                 "Punch In Now",
+//                 style: TextStyle(
+//                     fontSize: 15,
+//                     fontWeight: FontWeight.bold,
+//                     color: Colors.white),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // CUSTOMER INFO — NULL SAFE
+//   Widget _customerInfo() {
+//     final user = punchData?.data?.userDetails;
+//     final service = punchData?.data?.serviceDetails;
+//     final address = punchData?.data?.defaultAddress;
+//
+//     return Row(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         CircleAvatar(
+//           radius: 22,
+//           backgroundImage: (user?.image != null && user!.image!.isNotEmpty)
+//               ? NetworkImage(user.image!)
+//               : null,
+//         ),
+//
+//         SizedBox(width: 12),
+//
+//         Expanded(
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Text(user?.name ?? "Unknown User",
+//                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+//
+//               SizedBox(height: 4),
+//
+//               Text("Service - ${service?.name ?? "N/A"}",
+//                   style: TextStyle(fontSize: 13.5)),
+//
+//               SizedBox(height: 4),
+//
+//               Text(
+//                 "Date & Time – ${punchData?.data?.scheduledDate ?? ""}, "
+//                     "${punchData?.data?.preferredTime ?? ""}",
+//                 style: TextStyle(fontSize: 13),
+//               ),
+//
+//               SizedBox(height: 4),
+//
+//               Text(
+//                 "Address – ${address?.addressDetails ?? "No address"}",
+//                 maxLines: 2,
+//                 overflow: TextOverflow.ellipsis,
+//                 style: TextStyle(fontSize: 13),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +379,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:service_app_qwickhome/dashboard/punch_in_timer.dart';
+import 'package:service_app_qwickhome/dashboard/service_details_screen.dart';
 import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
 import '../api_service/api_services.dart';
@@ -14,12 +387,13 @@ import '../api_service/urls.dart';
 import '../models/punchin_get_model.dart';
 import '../prefs/app_preference.dart';
 import '../prefs/preferece_keys.dart';
-import 'package:http_parser/http_parser.dart';
+
 
 class PunchInScreen extends StatefulWidget {
   final String bookingId;
-
-  const PunchInScreen({super.key, required this.bookingId});
+  final int serviceId;
+  final String serviceName;
+  const PunchInScreen({super.key, required this.bookingId, required this.serviceId, required this.serviceName});
 
   @override
   State<PunchInScreen> createState() => _PunchInScreenState();
@@ -107,7 +481,7 @@ class _PunchInScreenState extends State<PunchInScreen> {
         "bookingId": widget.bookingId,
         "startNotes": notesController.text,
         "startTime": DateTime.now().toIso8601String(),
-       // "startTime": getDubaiTime().toIso8601String(),
+        // "startTime": getDubaiTime().toIso8601String(),
 
 
         "startImage": await MultipartFile.fromFile(
@@ -150,10 +524,11 @@ class _PunchInScreenState extends State<PunchInScreen> {
               scheduleDate: punchData!.data!.scheduledDate!,
               scheduleTime: punchData!.data!.preferredTime!,
               startTime: DateTime.now().toString(), // ✅ timer start time
-
+              serviceId: widget.serviceId,
+              // serviceName: widget.serviceName,
             ),
-          ),
-        );
+            ),
+          );
       }
     } catch (e) {
       print("Punch POST Error: $e");
@@ -374,6 +749,28 @@ class _PunchInScreenState extends State<PunchInScreen> {
               Text("Date & Time – ${punchData!.data!.scheduledDate}, ${punchData!.data!.preferredTime}", style: TextStyle(fontSize: 13)),
               const SizedBox(height: 4),
               Text("Address – ${address.addressDetails}", overflow: TextOverflow.ellipsis, maxLines: 2, style: TextStyle(fontSize: 13)),
+              SizedBox(height: 4),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ServicesDetailsScreen(
+                        serviceId: widget.serviceId,
+                        name: widget.serviceName,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  "View Details about the Service",
+                  style: TextStyle(
+                    color: HexColor('#004271'),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -381,5 +778,6 @@ class _PunchInScreenState extends State<PunchInScreen> {
     );
   }
 }
+
 
 

@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:service_app_qwickhome/api_service/urls.dart';
 
 
+
+
 class ApiException implements Exception {
   final int? statusCode;
   final String message;
@@ -213,24 +215,6 @@ class ApiService {
     }
   }
 
-  // ✅ Multipart API method
-  // static Future<Response> postMultipart(String url, FormData formData) async {
-  //   try {
-  //     Dio dio = Dio();
-  //     return await dio.post(
-  //       url,
-  //       data: formData,
-  //       options: Options(
-  //         headers: {
-  //           "Accept": "application/json",
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     throw Exception("Multipart Error: $e");
-  //   }
-  // }
   static Future<Response> postMultipart(String endpoint, FormData formData) async {
     try {
       return await _dio.post(
@@ -246,7 +230,6 @@ class ApiService {
       throw Exception("Multipart Error: $e");
     }
   }
-
 
   static Future<Response> requestProfileChangeAPI(FormData formData) async {
     try {

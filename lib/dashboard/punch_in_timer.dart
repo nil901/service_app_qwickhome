@@ -627,7 +627,6 @@
 //   }
 // }
 
-
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
@@ -637,8 +636,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:http_parser/http_parser.dart';
-
 import '../colors/colors.dart';
 import '../utils/custom_app_bar.dart';
 import '../dashboard/punch_out_screen.dart';
@@ -655,6 +652,9 @@ class TimerScreen extends StatefulWidget {
   final String scheduleDate;
   final String scheduleTime;
   final String startTime;
+  final int serviceId;
+  // final String serviceName;
+
 
   const TimerScreen({
     super.key,
@@ -667,6 +667,8 @@ class TimerScreen extends StatefulWidget {
     required this.scheduleDate,
     required this.scheduleTime,
     required this.startTime,
+    required this.serviceId,
+    // required this.serviceName,
   });
 
   @override
@@ -795,7 +797,7 @@ class _TimerScreenState extends State<TimerScreen> {
         "midImage": await MultipartFile.fromFile(
           midImage!.path,
           filename: midImage!.path.split('/').last,
-          contentType: MediaType("image", "jpeg"),
+          // contentType: MediaType("image", "jpeg"),
         ),
       });
 
@@ -972,8 +974,24 @@ class _TimerScreenState extends State<TimerScreen> {
                   apiTimer?.cancel();
                   await uploadMidProgress();
 
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (c) => PunchOutScreen(bookingId:widget.bookingId,)));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (c) => PunchOutScreen(
+                        bookingId: widget.bookingId,
+                        userName: widget.userName,
+                        userImage: widget.userImage,
+                        serviceName: widget.serviceName,
+                        address: widget.address,
+                        scheduleDate: widget.scheduleDate,
+                        scheduleTime: widget.scheduleTime,
+                        serviceId: widget.serviceId,
+
+
+                      ),
+                    ),
+                  );
+
                 },
                 child: const Text(
                   "Continue Punch Out",
