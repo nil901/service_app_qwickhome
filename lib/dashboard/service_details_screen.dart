@@ -12,13 +12,14 @@ import 'package:service_app_qwickhome/utils/enum.dart';
 import '../models/service_details_model.dart';
 
 class ServicesDetailsScreen extends ConsumerStatefulWidget {
+  final int serviceId;
+  final String name;
   const ServicesDetailsScreen({
     super.key,
     required this.serviceId,
     required this.name,
   });
-  final int serviceId;
-  final String name;
+
 
   @override
   ConsumerState<ServicesDetailsScreen> createState() =>

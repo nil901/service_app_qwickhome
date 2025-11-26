@@ -15,7 +15,6 @@ final String googleApiKey = "AIzaSyBGv9znbx4hAdCp_6YK0-HO2XVKI4ZXALk";
 class ProviderTrackingPage extends StatefulWidget {
   final int customerId;
 
-
   final String? bookingId;
   final int? serviceId;
   final String? serviceName;
@@ -163,8 +162,7 @@ class _ProviderTrackingPageState extends State<ProviderTrackingPage> {
               "DEBUG - Provider and User are within ~10 meters. Skipping directions.",
             );
             setState(() {
-              _polylines = {}; // clear
-              // show short texts
+              _polylines = {};
               distanceText = _formatDistance(distanceMeters);
               durationText = "Less than a minute";
               arrivalTime = _formatTime(DateTime.now());

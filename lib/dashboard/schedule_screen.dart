@@ -850,7 +850,7 @@ class ScheduleCard extends StatelessWidget {
               InkWell(
                 onTap: (){
                   Navigator.push(context , MaterialPageRoute(builder: (context)=> ProviderTrackingPage(
-                    customerId: 18,
+                    customerId: booking.customerDetails.id,
                     bookingId: booking.bookingId.toString(),
                     serviceId: booking.serviceDetails.id,
                     serviceName: booking.serviceDetails.name,
